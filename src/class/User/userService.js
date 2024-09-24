@@ -4,14 +4,14 @@ import { pool } from "../../db/db.js";
 class UserService {
 
   async createUser(userData) {
-    const { nombre, email, password, documento, tipo_documento_id, carrera_id } = userData;
+    const { nombre, email, password, documento, tipo_documento_id, carrera_id, rol_id } = userData;
 
     const insertQuery = `
-      INSERT INTO usuarios (nombre, email, password, documento, tipo_documento_id, carrera_id)
-      VALUES (?, ?, ?, ?, ?, ?);
+      INSERT INTO usuarios (nombre, email, password, documento, tipo_documento_id, carrera_id, rol_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
 
-    const [result] = await pool.query(insertQuery, [nombre, email, password, documento, tipo_documento_id, carrera_id]);
+    const [result] = await pool.query(insertQuery, [nombre, email, password, documento, tipo_documento_id, carrera_id, rol_id]);
 
     const getUserQuery = `
       SELECT * FROM usuarios WHERE id = LAST_INSERT_ID();
@@ -22,6 +22,7 @@ class UserService {
     return newUser[0];
   }
 
+
   async getUserById(id) {
     const query = 'SELECT * FROM usuarios WHERE id = $1;';
     const result = await pool.query(query, [id]);
@@ -29,16 +30,19 @@ class UserService {
   }
 
 
-  async updateUser(id, { nombre, email, password, documento, tipo_documento_id, carrera_id }) {
+  async updateUser(id, { nombre, email, password, documento, tipo_documento_id, carrera_id, rol_id }) {
     const query = `
       UPDATE usuarios
-      SET nombre = $1, email = $2, password = $3, documento = $4, tipo_documento_id = $5, carrera_id = $6
-      WHERE id = $7 RETURNING *;
+      SET nombre = $1, email = $2, password = $3, documento = $4, tipo_documento_id = $5, carrera_id = $6, rol_id = $7
+      WHERE id = $8 RETURNING *;
     `;
-    const values = [nombre, email, password, documento, tipo_documento_id, carrera_id, id];
+
+    const values = [nombre, email, password, documento, tipo_documento_id, carrera_id, rol_id, id];
     const result = await pool.query(query, values);
+
     return result.rows[0];
   }
+
 
   // Eliminar un usuario por su ID
   async deleteUser(id) {

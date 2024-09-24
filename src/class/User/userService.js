@@ -50,8 +50,11 @@ class UserService {
   // Leer todos los usuarios
   async getAllUsers() {
     const query = 'SELECT * FROM usuarios;';
-    const result = await pool.query(query);
-    return result.rows;
+    const [result] = await pool.query(query);
+    console.log('====================================');
+    console.log(result);
+    console.log('====================================');
+    return result;
   }
 }
 

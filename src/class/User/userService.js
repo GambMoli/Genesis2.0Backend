@@ -22,14 +22,11 @@ class UserService {
     return newUser[0];
   }
 
-
   async getUserById(id) {
     const query = 'SELECT * FROM usuarios WHERE id = ?;';
     const [result] = await pool.query(query, [id]);
     return result[0];
   }
-
-
 
   async updateUser(id, { nombre, email, password, documento, tipo_documento_id, carrera_id, rol_id }) {
     const query = `
@@ -44,15 +41,12 @@ class UserService {
     return result.rows[0];
   }
 
-
-  // Eliminar un usuario por su ID
   async deleteUser(id) {
     const query = 'DELETE FROM usuarios WHERE id = $1 RETURNING *;';
     const result = await pool.query(query, [id]);
     return result.rows[0];
   }
 
-  // Leer todos los usuarios
   async getAllUsers() {
     const query = 'SELECT * FROM usuarios;';
     const [result] = await pool.query(query);
@@ -61,6 +55,37 @@ class UserService {
     console.log('====================================');
     return result;
   }
+
+  async validateUser(email, password) {
+    const query = `
+      SELECT usuarios.nombre AS username, roles.nombre AS role, usuarios.password AS hashedPassword
+      FROM usuarios
+      JOIN roles ON usuarios.rol_id = roles.id
+      WHERE usuarios.email = ?;
+    `;
+
+    const [result] = await pool.query(query, [email]);
+
+    if (result.length === 0) {
+
+      throw new Error('Usuario o contraseña inválidos');
+    }
+
+    const user = result[0];
+
+    const isValidPassword = await bcrypt.compare(password, user.hashedPassword);
+
+    if (!isValidPassword) {
+      throw new Error('Usuario o contraseña inválidos');
+    }
+
+    return {
+      username: user.username,
+      role: user.role
+    };
+  }
+
+
 }
 
 export const userService = new UserService();

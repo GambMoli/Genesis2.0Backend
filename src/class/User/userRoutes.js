@@ -59,6 +59,21 @@ userRoutes.get('/users', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+
+  userRoutes.post('/users/validate', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ message: 'Email y contraseña son requeridos' });
+      }
+      const user = await userService.validateUser(email, password);
+      res.status(200).json({ username: user.username, role: user.role });
+    } catch (error) {
+
+      res.status(401).json({ error: error.message });
+    }
+  });
+
 });
 
 export default userRoutes;

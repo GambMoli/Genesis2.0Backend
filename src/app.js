@@ -1,6 +1,6 @@
 import express from 'express'
 import { pool } from './db/db.js';
-
+import { PORT } from './config.js'
 const app = express();
 
 
@@ -16,4 +16,4 @@ app.get('/ping', (req, res) => {
   res.send(result)
 })
 
-app.listen(3000);
+app.listen(PORT);

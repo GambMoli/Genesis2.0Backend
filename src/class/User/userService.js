@@ -69,15 +69,12 @@ class UserService {
     const [result] = await pool.query(query, [email]);
 
     if (result.length === 0) {
-
       throw new Error('Usuario o contraseña inválidos');
     }
 
     const user = result[0];
 
-    const isValidPassword = await bcrypt.compare(password, user.hashedPassword);
-
-    if (!isValidPassword) {
+    if (user.hashedPassword !== password) {
       throw new Error('Usuario o contraseña inválidos');
     }
 

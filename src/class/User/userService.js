@@ -24,10 +24,11 @@ class UserService {
 
 
   async getUserById(id) {
-    const query = 'SELECT * FROM usuarios WHERE id = $1;';
-    const result = await pool.query(query, [id]);
-    return result.rows[0];
+    const query = 'SELECT * FROM usuarios WHERE id = ?;';
+    const [result] = await pool.query(query, [id]);
+    return result[0];
   }
+
 
 
   async updateUser(id, { nombre, email, password, documento, tipo_documento_id, carrera_id, rol_id }) {

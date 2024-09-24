@@ -3,14 +3,23 @@ import { pool } from "../../db/db.js";
 
 class UserService {
 
-  async createUser({ nombre, email, password, documento, tipo_documento_id, carrera_id }) {
-    const query = `
+  static async createUser(userData) {
+    const { nombre, email, password, documento, tipo_documento_id, carrera_id } = userData;
+
+    const insertQuery = `
       INSERT INTO usuarios (nombre, email, password, documento, tipo_documento_id, carrera_id)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+      VALUES (?, ?, ?, ?, ?, ?);
     `;
-    const values = [nombre, email, password, documento, tipo_documento_id, carrera_id];
-    const result = await pool.query(query, values);
-    return result.rows[0];
+
+    const [result] = await pool.query(insertQuery, [nombre, email, password, documento, tipo_documento_id, carrera_id]);
+
+    const getUserQuery = `
+      SELECT * FROM usuarios WHERE id = LAST_INSERT_ID();
+    `;
+
+    const [newUser] = await pool.query(getUserQuery);
+
+    return newUser[0];
   }
 
 

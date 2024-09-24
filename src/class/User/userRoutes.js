@@ -61,4 +61,4 @@ userRoutes.get('/users', async (req, res) => {
   }
 });
 
-export default userRoutes; // Ahora exportamos como 'userRoutes'
+export default userRoutes;

@@ -8,8 +8,8 @@ app.get('/', (req, res) => {
   res.send('Sirve')
 })
 
-app.get('/ping', (req, res) => {
-  const result = pool.query('SELECT * FROM carreras')
+app.get('/ping', async (req, res) => {
+  const result = await pool.query('SELECT * FROM carreras')
   console.log('====================================');
   console.log(result);
   console.log('====================================');

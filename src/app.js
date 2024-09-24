@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/ping', (req, res) => {
-  const result = pool.query('SELECT 1+1')
+  const result = pool.query('SELECT * FROM carreras')
   console.log('====================================');
   console.log(result);
   console.log('====================================');

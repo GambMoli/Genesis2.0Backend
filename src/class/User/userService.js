@@ -3,7 +3,7 @@ import { pool } from "../../db/db.js";
 
 class UserService {
 
-  static async createUser(userData) {
+  async createUser(userData) {
     const { nombre, email, password, documento, tipo_documento_id, carrera_id } = userData;
 
     const insertQuery = `
@@ -21,7 +21,6 @@ class UserService {
 
     return newUser[0];
   }
-
 
   async getUserById(id) {
     const query = 'SELECT * FROM usuarios WHERE id = $1;';

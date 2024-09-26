@@ -60,7 +60,7 @@ class UserService {
 
   async validateUser(email, password) {
     const query = `
-      SELECT usuarios.nombre AS username, roles.nombre AS role, usuarios.password AS hashedPassword
+      SELECT usuarios.nombre AS username, roles.nombre AS role, usuarios.id AS id, usuarios.password AS hashedPassword
       FROM usuarios
       JOIN roles ON usuarios.rol_id = roles.id
       WHERE usuarios.email = ?;

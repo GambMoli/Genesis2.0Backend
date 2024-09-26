@@ -1,6 +1,6 @@
 
 import { pool } from "../../db/db.js";
-import bcrypt from 'bcrypt';
+
 
 
 class UserService {
@@ -80,7 +80,8 @@ class UserService {
 
     return {
       username: user.username,
-      role: user.role
+      role: user.role,
+      id: user.id
     };
   }
 

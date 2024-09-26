@@ -1,9 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import { pool } from './db/db.js';
 import { PORT } from './config.js';
 import userRoutes from './class/User/userRoutes.js';
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 

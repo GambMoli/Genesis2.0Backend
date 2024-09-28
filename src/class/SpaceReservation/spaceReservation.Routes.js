@@ -2,6 +2,7 @@
 import express from 'express';
 import SpaceReservation from './spaceReservation.js';
 import ReserveSpaceCommand from '../Commands/ReserveSpaceCommand.js';
+import { pool } from '../../db/db.js';
 
 const router = express.Router();
 const spaceReservation = new SpaceReservation();
@@ -38,14 +39,21 @@ router.post('/undo', async (req, res) => {
 router.get('/history/:userId', async (req, res) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    console.log('====================================');
-    console.log(userId);
-    console.log('====================================');
     const history = await spaceReservation.getCommandHistory(userId);
     res.status(200).json(history);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error al obtener el historial' });
   }
 });
+
+router.get('/spaces', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT id, nombre FROM espacios');
+    res.status(200).json(rows);
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error al obtener los espacios' });
+  }
+});
+
 
 export default router;

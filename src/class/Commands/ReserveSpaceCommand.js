@@ -79,25 +79,24 @@ export default class ReserveSpaceCommand extends Command {
 
   async getDetails(userId) {
     const query = `
-    SELECT * FROM reservas
-    WHERE usuario_id = ?
-    ORDER BY fecha_inicio DESC
-  `;
+      SELECT r.*, e.nombre AS nombre_espacio
+      FROM reservas r
+      JOIN espacios e ON r.espacio_id = e.id
+      WHERE r.usuario_id = ?
+      ORDER BY r.fecha_inicio DESC
+    `;
     try {
-      console.log('Ejecutando consulta:', query);
-      console.log('Parámetros:', [userId]);
       const [rows] = await pool.query(query, [userId]);
-      console.log('Resultados obtenidos:', rows.length);
       return rows.map(row => ({
-        type: 'ReserveSpaceCommand',
         details: {
           reservaId: row.id,
-          spaceId: row.espacio_id,
+          spaceName: row.nombre_espacio, // Cambiado de spaceId a spaceName
           userId: row.usuario_id,
           startDate: row.fecha_inicio,
           endDate: row.fecha_fin,
           reason: row.motivo,
-          status: row.estado
+          status: row.estado,
+          nombre: row.nombre
         }
       }));
     } catch (error) {

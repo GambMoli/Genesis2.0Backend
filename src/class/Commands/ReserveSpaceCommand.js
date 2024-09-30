@@ -104,4 +104,52 @@ export default class ReserveSpaceCommand extends Command {
     }
   }
 
+  async getAllDetails() {
+    const query = `
+      SELECT r.*, e.nombre AS nombre_espacio, u.nombre AS nombre_usuario
+      FROM reservas r
+      JOIN espacios e ON r.espacio_id = e.id
+      JOIN usuarios u ON r.usuario_id = u.id
+      ORDER BY r.fecha_inicio DESC
+    `;
+    try {
+      const [rows] = await pool.query(query);
+      return rows.map(row => ({
+        details: {
+          reservaId: row.id,
+          spaceName: row.nombre_espacio,
+          userId: row.usuario_id,
+          userName: row.nombre_usuario,
+          startDate: row.fecha_inicio,
+          endDate: row.fecha_fin,
+          reason: row.motivo,
+          status: row.estado
+        }
+      }));
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async updateStatus(reservaId, newStatus) {
+    if (!['aceptado', 'rechazado'].includes(newStatus.toLowerCase())) {
+      throw new Error('Estado no válido. Debe ser "aceptado" o "rechazado".');
+    }
+
+    const query = `
+      UPDATE reservas
+      SET estado = ?
+      WHERE id = ?
+    `;
+    try {
+      const [result] = await pool.query(query, [newStatus.toLowerCase(), reservaId]);
+      if (result.affectedRows === 0) {
+        throw new Error('No se encontró la reserva especificada.');
+      }
+      return { success: true, message: `Reserva ${newStatus.toLowerCase()} con éxito` };
+    } catch (error) {
+      throw new Error(`Error al actualizar el estado de la reserva: ${error.message}`);
+    }
+  }
+
 }

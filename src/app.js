@@ -19,7 +19,6 @@ app.get('/ping', async (req, res) => {
   res.send(result);
 });
 
-// Rutas de usuarios
 app.use('/api', userRoutes);
 
 

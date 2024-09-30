@@ -1,8 +1,6 @@
-// spaceReservation.js
 import ReserveSpaceCommand from '../Commands/ReserveSpaceCommand.js';
 
 export default class SpaceReservation {
-
   constructor() {
     this.history = [];
   }
@@ -50,4 +48,27 @@ export default class SpaceReservation {
       return { success: false, message: 'Error al obtener el historial completo' };
     }
   }
+
+  async getAllDetails() {
+    try {
+      const command = new ReserveSpaceCommand();
+      const result = await command.getAllDetails();
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Error al obtener todas las reservas:', error);
+      return { success: false, message: 'Error al obtener todas las reservas' };
+    }
+  }
+
+  async updateStatus(reservaId, newStatus) {
+    try {
+      const command = new ReserveSpaceCommand();
+      const result = await command.updateStatus(reservaId, newStatus);
+      return result;
+    } catch (error) {
+      console.error('Error al actualizar el estado de la reserva:', error);
+      return { success: false, message: error.message };
+    }
+  }
+
 }

@@ -61,7 +61,7 @@ export default class SpaceReservation {
     }
   }
 
-  async updateReservation(reservaId, newStartDate, newEndDate, newReason, newSpaceId) {
+  async updateReservation(reservaId, userId, newStartDate, newEndDate, newReason, newSpaceId) {
     try {
       const command = new ReserveSpaceCommand();
       const result = await command.updateReservation(reservaId, userId, newStartDate, newEndDate, newReason, newSpaceId);
@@ -71,6 +71,7 @@ export default class SpaceReservation {
       return { success: false, message: error.message };
     }
   }
+
 
 
   async getReservationById(reservaId) {

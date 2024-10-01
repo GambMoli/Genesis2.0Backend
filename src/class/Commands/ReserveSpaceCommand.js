@@ -175,17 +175,20 @@ export default class ReserveSpaceCommand extends Command {
   }
 
   async updateReservation(reservaId, userId, newStartDate, newEndDate, newReason, newSpaceId = null) {
+
     const findReservationQuery = `
       SELECT * FROM reservas
-      WHERE id = ? AND usuario_id = ? AND estado = 'pendiente'
+      WHERE id = ? AND usuario_id = ?
     `;
 
+
     const [reservationRows] = await pool.query(findReservationQuery, [reservaId, userId]);
+
     if (reservationRows.length === 0) {
       throw new Error('No se puede editar esta reserva. Puede que no exista o no esté en estado "pendiente".');
     }
 
-    // Si se proporciona un nuevo spaceId, verificar su disponibilidad
+    // Comprobar la disponibilidad del nuevo espacio
     const spaceIdToCheck = newSpaceId || reservationRows[0].espacio_id; // Usa el nuevo spaceId si se proporciona
     const queryAvailability = `
       SELECT COUNT(*) as count
@@ -213,16 +216,17 @@ export default class ReserveSpaceCommand extends Command {
       throw new Error('El espacio no está disponible para las nuevas fechas seleccionadas.');
     }
 
+    // Actualizar la reserva
     const updateQuery = `
       UPDATE reservas
-      SET espacio_id = ?, fecha_inicio = ?, fecha_fin = ?, motivo = ?
+      SET espacio_id = ?, fecha_inicio = ?, fecha_fin = ?, motivo = ?, estado = 'pendiente'
       WHERE id = ? AND usuario_id = ?
     `;
 
     const [result] = await pool.query(updateQuery, [spaceIdToCheck, newStartDate, newEndDate, newReason, reservaId, userId]);
 
     if (result.affectedRows === 0) {
-      throw new Error('No se pudo actualizar la reserva.');
+      throw new Error('No se pudo actualizar la reserva. Asegúrate de que la reserva esté en estado "pendiente".');
     }
 
     return { success: true, message: 'Reserva actualizada con éxito' };

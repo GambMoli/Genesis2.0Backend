@@ -77,15 +77,16 @@ router.put('/update-status/:reservaId', async (req, res) => {
 
 router.put('/update-reservation/:reservaId', async (req, res) => {
   const { reservaId } = req.params;
-  const { newStartDate, newEndDate, newReason, newSpaceId } = req.body;
+  const { userId, newStartDate, newEndDate, newReason, newSpaceId } = req.body; // Asegúrate de extraer userId del cuerpo
 
   try {
-    const result = await spaceReservation.updateReservation(reservaId, newStartDate, newEndDate, newReason, newSpaceId);
+    const result = await spaceReservation.updateReservation(reservaId, userId, newStartDate, newEndDate, newReason, newSpaceId);
     res.status(200).json(result);
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 });
+
 
 
 router.get('/reservation/:reservaId', async (req, res) => {

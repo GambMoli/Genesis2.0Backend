@@ -23,28 +23,19 @@ router.post('/reserve', async (req, res) => {
   }
 });
 
-router.post('/undo', async (req, res) => {
-  try {
-    const result = await spaceReservation.undoLastCommand();
-    if (result.success) {
-      res.status(200).json(result);
-    } else {
-      res.status(400).json(result);
-    }
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error interno del servidor' });
-  }
-});
-
 router.get('/history/:userId', async (req, res) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    const history = await spaceReservation.getCommandHistory(userId);
+    const page = parseInt(req.query.page, 10) || 1;        // Página actual (por defecto 1)
+    const pageSize = parseInt(req.query.pageSize, 10) || 10; // Tamaño de la página (por defecto 10)
+
+    const history = await spaceReservation.getCommandHistory(userId, page, pageSize);
     res.status(200).json(history);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error al obtener el historial' });
   }
 });
+
 
 router.get('/spaces', async (req, res) => {
   try {
@@ -57,12 +48,16 @@ router.get('/spaces', async (req, res) => {
 
 router.get('/all-reservations', async (req, res) => {
   try {
-    const result = await spaceReservation.getAllDetails();
+    const page = parseInt(req.query.page, 10) || 1;
+    const pageSize = parseInt(req.query.pageSize, 10) || 10;
+
+    const result = await spaceReservation.getAllDetails(page, pageSize);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error al obtener todas las reservas' });
   }
 });
+
 
 router.put('/update-status/:reservaId', async (req, res) => {
   const { reservaId } = req.params;
@@ -79,6 +74,35 @@ router.put('/update-status/:reservaId', async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 });
+
+router.put('/update-reservation/:reservaId', async (req, res) => {
+  const { reservaId } = req.params;
+  const { newStartDate, newEndDate, newReason, newSpaceId } = req.body;
+
+  try {
+    const result = await spaceReservation.updateReservation(reservaId, newStartDate, newEndDate, newReason, newSpaceId);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+
+router.get('/reservation/:reservaId', async (req, res) => {
+  const { reservaId } = req.params;
+
+  try {
+    const result = await spaceReservation.getReservationById(reservaId);
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(404).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error al obtener los detalles de la reserva' });
+  }
+});
+
 
 
 export default router;

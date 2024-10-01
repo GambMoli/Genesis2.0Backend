@@ -17,20 +17,10 @@ export default class SpaceReservation {
     }
   }
 
-  async undoLastCommand() {
-    if (this.history.length === 0) {
-      return { success: false, message: 'No hay comandos para deshacer' };
-    }
-
-    const lastCommand = this.history.pop();
-    const result = await lastCommand.undo();
-    return result;
-  }
-
-  async getCommandHistory(userId) {
+  async getCommandHistory(userId, page = 1, pageSize = 10) {
     try {
       const command = new ReserveSpaceCommand();
-      const result = await command.getDetails(userId);
+      const result = await command.getDetails(userId, page, pageSize);
       return { success: true, data: result };
     } catch (error) {
       console.error('Error al obtener el historial:', error);
@@ -49,10 +39,10 @@ export default class SpaceReservation {
     }
   }
 
-  async getAllDetails() {
+  async getAllDetails(page = 1, pageSize = 10) {
     try {
       const command = new ReserveSpaceCommand();
-      const result = await command.getAllDetails();
+      const result = await command.getAllDetails(page, pageSize);
       return { success: true, data: result };
     } catch (error) {
       console.error('Error al obtener todas las reservas:', error);
@@ -70,5 +60,29 @@ export default class SpaceReservation {
       return { success: false, message: error.message };
     }
   }
+
+  async updateReservation(reservaId, newStartDate, newEndDate, newReason, newSpaceId) {
+    try {
+      const command = new ReserveSpaceCommand();
+      const result = await command.updateReservation(reservaId, userId, newStartDate, newEndDate, newReason, newSpaceId);
+      return result;
+    } catch (error) {
+      console.error('Error al actualizar la reservación:', error);
+      return { success: false, message: error.message };
+    }
+  }
+
+
+  async getReservationById(reservaId) {
+    try {
+      const command = new ReserveSpaceCommand();
+      const result = await command.getReservationById(reservaId);
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Error al obtener la reserva por ID:', error);
+      return { success: false, message: 'Error al obtener los detalles de la reserva' };
+    }
+  }
+
 
 }

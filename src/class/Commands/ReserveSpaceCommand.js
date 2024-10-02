@@ -154,7 +154,7 @@ export default class ReserveSpaceCommand extends Command {
   }
 
   async updateStatus(reservaId, newStatus) {
-    if (!['aceptado', 'rechazado'].includes(newStatus.toLowerCase())) {
+    if (!['aceptado', 'rechazado', "Rechazado por admin"].includes(newStatus.toLowerCase())) {
       throw new Error('Estado no válido. Debe ser "aceptado" o "rechazado".');
     }
 
@@ -188,8 +188,7 @@ export default class ReserveSpaceCommand extends Command {
       throw new Error('No se puede editar esta reserva. Puede que no exista o no esté en estado "pendiente".');
     }
 
-    // Comprobar la disponibilidad del nuevo espacio
-    const spaceIdToCheck = newSpaceId || reservationRows[0].espacio_id; // Usa el nuevo spaceId si se proporciona
+    const spaceIdToCheck = newSpaceId || reservationRows[0].espacio_id;
     const queryAvailability = `
       SELECT COUNT(*) as count
       FROM reservas

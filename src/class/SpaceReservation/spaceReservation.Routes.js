@@ -26,8 +26,8 @@ router.post('/reserve', async (req, res) => {
 router.get('/history/:userId', async (req, res) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    const page = parseInt(req.query.page, 10) || 1;        // Página actual (por defecto 1)
-    const pageSize = parseInt(req.query.pageSize, 10) || 10; // Tamaño de la página (por defecto 10)
+    const page = parseInt(req.query.page, 10) || 1;
+    const pageSize = parseInt(req.query.pageSize, 10) || 10;
 
     const history = await spaceReservation.getCommandHistory(userId, page, pageSize);
     res.status(200).json(history);

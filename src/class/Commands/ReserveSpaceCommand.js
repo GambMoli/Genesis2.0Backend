@@ -154,8 +154,9 @@ export default class ReserveSpaceCommand extends Command {
   }
 
   async updateStatus(reservaId, newStatus) {
-    if (!['aceptado', 'rechazado', "Rechazado por admin"].includes(newStatus.toLowerCase())) {
-      throw new Error('Estado no válido. Debe ser "aceptado" o "rechazado".');
+    const validStatuses = ['aceptado', 'rechazado', 'rechazado por admin', 'cancelado'];
+    if (!validStatuses.includes(newStatus.toLowerCase())) {
+      throw new Error('Estado no válido. Debe ser "aceptado", "rechazado", "rechazado por admin" o "cancelado".');
     }
 
     const query = `
@@ -173,6 +174,7 @@ export default class ReserveSpaceCommand extends Command {
       throw new Error(`Error al actualizar el estado de la reserva: ${error.message}`);
     }
   }
+
 
   async updateReservation(reservaId, userId, newStartDate, newEndDate, newReason, newSpaceId = null) {
 

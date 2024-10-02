@@ -81,7 +81,7 @@ export default class ReserveSpaceCommand extends Command {
       FROM reservas r
       JOIN espacios e ON r.espacio_id = e.id
       WHERE r.usuario_id = ?
-      ORDER BY r.fecha_inicio DESC
+      ORDER BY r.created_at DESC, r.updated_at DESC
       LIMIT ? OFFSET ?
     `;
 
@@ -101,7 +101,9 @@ export default class ReserveSpaceCommand extends Command {
           startDate: row.fecha_inicio,
           endDate: row.fecha_fin,
           reason: row.motivo,
-          status: row.estado
+          status: row.estado,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at
         }))
       };
     } catch (error) {

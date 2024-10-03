@@ -1,9 +1,7 @@
-// ReserveSpaceCommand.js
 import Command from './Command.js';
 import { pool } from '../../db/db.js';
 
 export default class ReserveSpaceCommand extends Command {
-
   constructor(spaceId, userId, startDate, endDate, reason) {
     super();
     this.spaceId = spaceId;
@@ -50,7 +48,7 @@ export default class ReserveSpaceCommand extends Command {
         AND estado != 'cancelada'
     `;
 
-    const [result] = await pool.query(query, [
+    const [rows] = await pool.query(query, [
       this.spaceId,
       this.endDate,
       this.startDate,
@@ -60,7 +58,7 @@ export default class ReserveSpaceCommand extends Command {
       this.endDate
     ]);
 
-    return result[0].count === 0;
+    return rows[0].count === 0;
   }
 
   async sendConfirmationNotification() {
@@ -70,12 +68,7 @@ export default class ReserveSpaceCommand extends Command {
   async getDetails(userId, page = 1, pageSize = 10) {
     const offset = (page - 1) * pageSize;
 
-    const countQuery = `
-      SELECT COUNT(*) AS total
-      FROM reservas
-      WHERE usuario_id = ?
-    `;
-
+    const countQuery = 'SELECT COUNT(*) AS total FROM reservas WHERE usuario_id = ?';
     const query = `
       SELECT r.*, e.nombre AS nombre_espacio
       FROM reservas r
@@ -86,8 +79,10 @@ export default class ReserveSpaceCommand extends Command {
     `;
 
     try {
-      const [[{ total }]] = await pool.query(countQuery, [userId]);
+      const [countRows] = await pool.query(countQuery, [userId]);
       const [rows] = await pool.query(query, [userId, pageSize, offset]);
+
+      const total = countRows[0].total;
 
       return {
         totalItems: total,
@@ -107,18 +102,14 @@ export default class ReserveSpaceCommand extends Command {
         }))
       };
     } catch (error) {
-      throw new Error(error);
+      throw new Error(`Error al obtener detalles de reserva: ${error.message}`);
     }
   }
 
   async getAllDetails(page = 1, pageSize = 10) {
     const offset = (page - 1) * pageSize;
 
-    const countQuery = `
-      SELECT COUNT(*) AS total
-      FROM reservas
-    `;
-
+    const countQuery = 'SELECT COUNT(*) AS total FROM reservas';
     const query = `
       SELECT r.*, e.nombre AS nombre_espacio, u.nombre AS nombre_usuario
       FROM reservas r
@@ -129,9 +120,7 @@ export default class ReserveSpaceCommand extends Command {
     `;
 
     try {
-
       const [[{ total }]] = await pool.query(countQuery);
-
       const [rows] = await pool.query(query, [pageSize, offset]);
 
       return {
@@ -151,7 +140,7 @@ export default class ReserveSpaceCommand extends Command {
         }))
       };
     } catch (error) {
-      throw new Error(error);
+      throw new Error(`Error al obtener todos los detalles de reservas: ${error.message}`);
     }
   }
 
@@ -161,11 +150,7 @@ export default class ReserveSpaceCommand extends Command {
       throw new Error('Estado no válido. Debe ser "aceptado", "rechazado", "rechazado por admin" o "cancelado".');
     }
 
-    const query = `
-      UPDATE reservas
-      SET estado = ?
-      WHERE id = ?
-    `;
+    const query = 'UPDATE reservas SET estado = ? WHERE id = ?';
     try {
       const [result] = await pool.query(query, [newStatus.toLowerCase(), reservaId]);
       if (result.affectedRows === 0) {
@@ -177,15 +162,8 @@ export default class ReserveSpaceCommand extends Command {
     }
   }
 
-
   async updateReservation(reservaId, userId, newStartDate, newEndDate, newReason, newSpaceId = null) {
-
-    const findReservationQuery = `
-      SELECT * FROM reservas
-      WHERE id = ? AND usuario_id = ?
-    `;
-
-
+    const findReservationQuery = 'SELECT * FROM reservas WHERE id = ? AND usuario_id = ?';
     const [reservationRows] = await pool.query(findReservationQuery, [reservaId, userId]);
 
     if (reservationRows.length === 0) {
@@ -219,7 +197,6 @@ export default class ReserveSpaceCommand extends Command {
       throw new Error('El espacio no está disponible para las nuevas fechas seleccionadas.');
     }
 
-    // Actualizar la reserva
     const updateQuery = `
       UPDATE reservas
       SET espacio_id = ?, fecha_inicio = ?, fecha_fin = ?, motivo = ?, estado = 'pendiente'
@@ -234,7 +211,6 @@ export default class ReserveSpaceCommand extends Command {
 
     return { success: true, message: 'Reserva actualizada con éxito' };
   }
-
 
   async getReservationById(reservaId) {
     const query = `

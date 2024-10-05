@@ -232,8 +232,10 @@ export default class ReserveSpaceCommand extends Command {
 
       return {
         reservaId: reservation.id,
-        spaceName: reservation.nombre_espacio,
-        spaceId: reservation.espacio_id,
+        space: {
+          spaceId: reservation.espacio_id,
+          spaceName: reservation.nombre_espacio
+        },
         userName: reservation.nombre_usuario,
         userId: reservation.usuario_id,
         startDate: reservation.fecha_inicio,
@@ -245,5 +247,6 @@ export default class ReserveSpaceCommand extends Command {
       throw new Error(`Error al obtener los detalles de la reserva: ${error.message}`);
     }
   }
+
 
 }

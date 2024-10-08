@@ -13,19 +13,9 @@ const doc = {
   },
   host: 'localhost:3000',
   basePath: '/api',
+  schemes: ['http', 'https'],
   consumes: ['application/json'],
   produces: ['application/json'],
-  servers: [
-    {
-      url: 'http://localhost:3000/api',
-      description: 'Servidor de desarrollo'
-    },
-    {
-      url: 'https://genesis20backend-production.up.railway.app/api',
-      description: 'Servidor de producción'
-    }
-  ],
-  definitions: {},
   tags: [
     {
       name: 'Users',
@@ -39,7 +29,8 @@ const doc = {
       name: 'Library',
       description: 'Endpoints relacionados con la biblioteca'
     }
-  ]
+  ],
+  definitions: {}
 };
 
 const outputFile = './swagger-output.json';
@@ -50,6 +41,24 @@ const endpointsFiles = [
 ];
 
 
+const generateDoc = async () => {
+  let outputJson = await swaggerAutogen(outputFile, endpointsFiles, doc);
 
+  outputJson.servers = [
+    {
+      url: 'http://localhost:3000/api',
+      description: 'Servidor de desarrollo'
+    },
+    {
+      url: 'https://genesis20backend-production.up.railway.app/api',
+      description: 'Servidor de producción'
+    }
+  ];
 
-swaggerAutogen(outputFile, endpointsFiles, doc);
+  const fs = await import('fs/promises');
+  await fs.writeFile(outputFile, JSON.stringify(outputJson, null, 2));
+
+  console.log('Documentation generated with custom servers');
+};
+
+generateDoc();

@@ -21,7 +21,7 @@ const doc = {
       description: 'Servidor de desarrollo'
     },
     {
-      url: 'https://tudominio.com/api',
+      url: 'https://genesis20backend-production.up.railway.app/api',
       description: 'Servidor de producción'
     }
   ],

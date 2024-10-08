@@ -5,13 +5,20 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+export const PORT = process.env.PORT || 3000;
+
+const isProduction = PORT !== '3000';
+
 const doc = {
   info: {
     title: 'Genesis 2.0',
     description: 'Endpoints Genesis 2.0',
     version: '1.0.0'
   },
-  host: 'localhost:3000',
+  host: isProduction
+    ? 'genesis20backend-production.up.railway.app' // Host en producción
+    : `localhost:${PORT}`, // Host en desarrollo
   basePath: '/api',
   schemes: ['http', 'https'],
   consumes: ['application/json'],
@@ -40,18 +47,15 @@ const endpointsFiles = [
   path.join(__dirname, './routes/libraryRoute.js'),
 ];
 
-
 const generateDoc = async () => {
   let outputJson = await swaggerAutogen(outputFile, endpointsFiles, doc);
 
   outputJson.servers = [
     {
-      url: 'http://localhost:3000/api',
-      description: 'Servidor de desarrollo'
-    },
-    {
-      url: 'https://genesis20backend-production.up.railway.app/api',
-      description: 'Servidor de producción'
+      url: isProduction
+        ? 'https://genesis20backend-production.up.railway.app/api'
+        : `http://localhost:${PORT}/api`, // Usar el puerto dinámico
+      description: isProduction ? 'Servidor de producción' : 'Servidor de desarrollo'
     }
   ];
 

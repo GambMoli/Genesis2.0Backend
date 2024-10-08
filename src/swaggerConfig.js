@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 export const PORT = process.env.PORT || 3000;
 
 const isProduction = PORT !== '3000';
@@ -17,10 +16,10 @@ const doc = {
     version: '1.0.0'
   },
   host: isProduction
-    ? 'genesis20backend-production.up.railway.app' // Host en producción
-    : `localhost:${PORT}`, // Host en desarrollo
+    ? 'genesis20backend-production.up.railway.app'
+    : `localhost:${PORT}`,
   basePath: '/api',
-  schemes: ['http', 'https'],
+  schemes: isProduction ? ['https'] : ['http'], // Cambiar esquemas según el entorno
   consumes: ['application/json'],
   produces: ['application/json'],
   tags: [

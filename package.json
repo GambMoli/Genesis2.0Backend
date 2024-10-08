@@ -14,7 +14,7 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "dev": "node src/swaggerConfig.js && nodemon src/app.js",
-    "start": "src/app.js"
+    "start": "node src/swaggerConfig.js && node src/app.js"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,701 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Genesis 2.0",
+    "description": "Endpoints Genesis 2.0",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Servidor de desarrollo"
+    },
+    {
+      "url": "https://tudominio.com/api",
+      "description": "Servidor de producción"
+    }
+  ],
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Endpoints relacionados con usuarios"
+    },
+    {
+      "name": "Space Reservations",
+      "description": "Endpoints relacionados con reserva de espacios"
+    },
+    {
+      "name": "Library",
+      "description": "Endpoints relacionados con la biblioteca"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user",
+        "description": "Creates a new user with the provided information",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users",
+        "description": "Retrieves a list of all users",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user by ID",
+        "description": "Retrieves a user\\'s information based on their ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update a user",
+        "description": "Updates a user\\'s information based on their ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete a user",
+        "description": "Deletes a user based on their ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/validate": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Validate user credentials",
+        "description": "Validates user email and password",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/spaces/reserve": {
+      "post": {
+        "tags": [
+          "Space Reservations"
+        ],
+        "summary": "Reserve a space",
+        "description": "Creates a new space reservation with the specified details including space ID, user ID, dates and reason",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "spaceId": {
+                  "example": "any"
+                },
+                "userId": {
+                  "example": "any"
+                },
+                "startDate": {
+                  "example": "any"
+                },
+                "endDate": {
+                  "example": "any"
+                },
+                "reason": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/spaces/history/{userId}": {
+      "get": {
+        "tags": [
+          "Space Reservations"
+        ],
+        "summary": "Get user reservation history",
+        "description": "Retrieves the reservation history for a specific user with pagination support",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/spaces/spaces": {
+      "get": {
+        "tags": [
+          "Spaces"
+        ],
+        "summary": "Get all available spaces",
+        "description": "Retrieves a list of all available spaces with their IDs and names",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/spaces/all-reservations": {
+      "get": {
+        "tags": [
+          "Space Reservations"
+        ],
+        "summary": "Get all reservations",
+        "description": "Retrieves all space reservations with pagination support",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/spaces/update-status/{reservaId}": {
+      "put": {
+        "tags": [
+          "Space Reservations"
+        ],
+        "summary": "Update reservation status",
+        "description": "Updates the status of a specific reservation",
+        "parameters": [
+          {
+            "name": "reservaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "newStatus": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/spaces/update-reservation/{reservaId}": {
+      "put": {
+        "tags": [
+          "Space Reservations"
+        ],
+        "summary": "Update reservation details",
+        "description": "Updates the details of a specific reservation including dates, reason and space",
+        "parameters": [
+          {
+            "name": "reservaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "newStartDate": {
+                  "example": "any"
+                },
+                "newEndDate": {
+                  "example": "any"
+                },
+                "newReason": {
+                  "example": "any"
+                },
+                "newSpaceId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/spaces/reservation/{reservaId}": {
+      "get": {
+        "tags": [
+          "Space Reservations"
+        ],
+        "summary": "Get reservation details",
+        "description": "Retrieves detailed information about a specific reservation",
+        "parameters": [
+          {
+            "name": "reservaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/library/reserve": {
+      "post": {
+        "tags": [
+          "Library"
+        ],
+        "summary": "Reserve a book",
+        "description": "Creates a new book reservation with the specified book ID, user ID and dates",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bookId": {
+                  "example": "any"
+                },
+                "userId": {
+                  "example": "any"
+                },
+                "startDate": {
+                  "example": "any"
+                },
+                "endDate": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/library/history/{userId}": {
+      "get": {
+        "tags": [
+          "Library"
+        ],
+        "summary": "Get user reservation history",
+        "description": "Retrieves the book reservation history for a specific user with pagination support",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/library/books": {
+      "get": {
+        "tags": [
+          "Library"
+        ],
+        "summary": "Get all books",
+        "description": "Retrieves a paginated list of all available books in the library",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Library"
+        ],
+        "summary": "Create a new book",
+        "description": "Adds a new book to the library with the provided details including name, author, image, PDF URL and description",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "autor": {
+                  "example": "any"
+                },
+                "imagen": {
+                  "example": "any"
+                },
+                "urlPdf": {
+                  "example": "any"
+                },
+                "descripcion": {
+                  "example": "any"
+                },
+                "usuarioId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/library/all-reservations": {
+      "get": {
+        "tags": [
+          "Library"
+        ],
+        "summary": "Get all book reservations",
+        "description": "Retrieves all book reservations with pagination support",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/library/reservations/{reservaId}": {
+      "put": {
+        "tags": [
+          "Library"
+        ],
+        "summary": "Update reservation status",
+        "description": "Updates the status of a specific book reservation",
+        "parameters": [
+          {
+            "name": "reservaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/library/cancel-reservation/{reservaId}": {
+      "put": {
+        "tags": [
+          "Library"
+        ],
+        "summary": "Cancel book reservation",
+        "description": "Cancels a specific book reservation for a user",
+        "parameters": [
+          {
+            "name": "reservaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

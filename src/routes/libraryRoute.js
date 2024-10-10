@@ -36,6 +36,7 @@ router.get('/library/history/:userId', async (req, res) => {
     const history = await libraryService.getReservationHistory(userId, page, pageSize);
     res.status(200).json(history);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ success: false, message: 'Error al obtener el historial' });
   }
 });
@@ -107,6 +108,7 @@ router.put('/library/reservations/:reservaId', async (req, res) => {
       res.status(400).json(result);
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ success: false, message: 'Error al actualizar el estado de la reserva' });
   }
 });
@@ -129,5 +131,29 @@ router.put('/library/cancel-reservation/:reservaId', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error al cancelar la reserva' });
   }
 });
+
+router.get('/library/:libroId/estadisticas', async (req, res) => {
+  // #swagger.tags = ['Libros']
+  // #swagger.summary = 'Obtener estadísticas del libro'
+  // #swagger.description = 'Recupera estadísticas para un libro específico'
+  try {
+    const libroId = parseInt(req.params.libroId, 10);
+    if (isNaN(libroId)) {
+      return res.status(400).json({ success: false, message: 'ID de libro inválido' });
+    }
+    const result = await libraryService.getBookStatistics(libroId);
+    console.log(result)
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ success: false, message: 'Error al obtener estadísticas del libro' });
+  }
+});
+
+
 
 export default router;

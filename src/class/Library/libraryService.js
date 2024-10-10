@@ -129,4 +129,14 @@ export default class LibraryService {
     }
   }
 
+  async getBookStatistics(bookId) {
+    try {
+      const result = await ReserveBookCommand.getBookStatistics(bookId);
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Error al obtener estadísticas del libro:', error);
+      return { success: false, message: 'Error al obtener estadísticas del libro' };
+    }
+  }
+
 }

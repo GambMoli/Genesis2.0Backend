@@ -5,17 +5,7 @@
     "description": "Endpoints Genesis 2.0",
     "version": "1.0.0"
   },
-  "host": "localhost:3000",
-  "servers": [
-    {
-      "url": "http://localhost:3000/api",
-      "description": "Servidor de desarrollo"
-    },
-    {
-      "url": "https://genesis20backend-production.up.railway.app/api",
-      "description": "Servidor de producción"
-    }
-  ],
+  "host": "genesis20backend-production.up.railway.app",
   "basePath": "/api",
   "tags": [
     {
@@ -32,7 +22,7 @@
     }
   ],
   "schemes": [
-    "http"
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -682,6 +672,34 @@
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/library/{libroId}/estadisticas": {
+      "get": {
+        "tags": [
+          "Libros"
+        ],
+        "summary": "Obtener estadísticas del libro",
+        "description": "Recupera estadísticas para un libro específico",
+        "parameters": [
+          {
+            "name": "libroId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {

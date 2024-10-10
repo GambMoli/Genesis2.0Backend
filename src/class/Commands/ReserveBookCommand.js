@@ -91,7 +91,7 @@ export default class ReserveBookCommand extends Command {
         AND ((fecha_inicio <= ? AND fecha_fin >= ?)
           OR (fecha_inicio <= ? AND fecha_fin >= ?)
           OR (fecha_inicio >= ? AND fecha_fin <= ?))
-        AND estado != 'cancelado'
+        AND estado != 'cancelada'
     `;
 
     const [rows] = await pool.query(query, [
@@ -335,6 +335,101 @@ export default class ReserveBookCommand extends Command {
 
     const [rows] = await pool.query(query, [bookId]);
     return rows[0];
+  }
+
+  static async getBookStatistics(bookId) {
+    const queries = {
+      reservationCount: `
+        SELECT COUNT(*) as count
+        FROM reservas_libros
+        WHERE libro_id = ?
+      `,
+      uniqueUsers: `
+        SELECT COUNT(DISTINCT usuario_id) as count
+        FROM reservas_libros
+        WHERE libro_id = ?
+      `,
+      totalReservationTime: `
+        SELECT SUM(TIMESTAMPDIFF(HOUR, fecha_inicio, fecha_fin)) as total_hours
+        FROM reservas_libros
+        WHERE libro_id = ?
+      `,
+      lastReservation: `
+        SELECT fecha_fin
+        FROM reservas_libros
+        WHERE libro_id = ?
+        ORDER BY fecha_fin DESC
+        LIMIT 1
+      `,
+      bookDetails: `
+        SELECT nombre, autor, descripcion
+        FROM libros
+        WHERE id = ?
+      `
+    };
+
+    try {
+      const [reservationCount] = await pool.query(queries.reservationCount, [bookId]);
+      const [uniqueUsers] = await pool.query(queries.uniqueUsers, [bookId]);
+      const [totalReservationTime] = await pool.query(queries.totalReservationTime, [bookId]);
+      const [lastReservation] = await pool.query(queries.lastReservation, [bookId]);
+      const [bookDetails] = await pool.query(queries.bookDetails, [bookId]);
+
+      return {
+        bookId,
+        ...bookDetails[0],
+        reservationCount: reservationCount[0].count,
+        uniqueUsers: uniqueUsers[0].count,
+        totalReservationTimeHours: totalReservationTime[0].total_hours || 0,
+        lastReservation: lastReservation[0]?.fecha_fin || null
+      };
+    } catch (error) {
+      throw new Error(`Error al obtener estadísticas del libro: ${error.message}`);
+    }
+  }
+
+  async getReservationHistory(userId, page = 1, pageSize = 10) {
+    const offset = (page - 1) * pageSize;
+    const query = `
+      SELECT
+        r.id as reserva_id,
+        l.id as libro_id,
+        l.nombre as libro_nombre,
+        l.autor as libro_autor,
+        r.fecha_inicio,
+        r.fecha_fin,
+        r.estado
+      FROM
+        reservas_libros r
+      JOIN
+        libros l ON r.libro_id = l.id
+      WHERE
+        r.usuario_id = ?
+      ORDER BY
+        r.fecha_inicio DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM reservas_libros
+      WHERE usuario_id = ?
+    `;
+
+    try {
+      const [reservations] = await pool.query(query, [userId, pageSize, offset]);
+      const [countResult] = await pool.query(countQuery, [userId]);
+      const totalReservations = countResult[0].total;
+
+      return {
+        reservations,
+        currentPage: page,
+        totalPages: Math.ceil(totalReservations / pageSize),
+        totalReservations
+      };
+    } catch (error) {
+      throw new Error(`Error al obtener el historial de reservaciones: ${error.message}`);
+    }
   }
 
 }

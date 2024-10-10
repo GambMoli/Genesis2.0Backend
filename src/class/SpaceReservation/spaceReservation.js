@@ -72,8 +72,6 @@ export default class SpaceReservation {
     }
   }
 
-
-
   async getReservationById(reservaId) {
     try {
       const command = new ReserveSpaceCommand();
@@ -84,6 +82,7 @@ export default class SpaceReservation {
       return { success: false, message: 'Error al obtener los detalles de la reserva' };
     }
   }
+
 
 
 }

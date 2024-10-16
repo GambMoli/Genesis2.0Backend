@@ -93,6 +93,51 @@ export default class ReserveBookCommand extends Command {
     }
   }
 
+  async getAllReservations(page = 1, pageSize = 10) {
+    const offset = (page - 1) * pageSize;
+
+    const countQuery = 'SELECT COUNT(*) AS total FROM reservas_libros';
+    const query = `
+      SELECT rl.*, l.nombre AS libro_nombre, l.autor AS libro_autor, u.nombre AS nombre_usuario
+      FROM reservas_libros rl
+      JOIN libros l ON rl.libro_id = l.id
+      JOIN usuarios u ON rl.usuario_id = u.id
+      ORDER BY rl.fecha_inicio DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    try {
+      const [[{ total }]] = await pool.query(countQuery);
+      const [rows] = await pool.query(query, [pageSize, offset]);
+
+      return {
+        totalItems: total,
+        currentPage: page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+        reservations: rows.map(row => ({
+          reservaId: row.id,
+          book: {
+            bookId: row.libro_id,
+            bookName: row.libro_nombre,
+            bookAuthor: row.libro_autor
+          },
+          user: {
+            userId: row.usuario_id,
+            userName: row.nombre_usuario
+          },
+          startDate: row.fecha_inicio,
+          endDate: row.fecha_fin,
+          status: row.estado,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at
+        }))
+      };
+    } catch (error) {
+      throw new Error(`Error al obtener todas las reservas de libros: ${error.message}`);
+    }
+  }
+
   static async getAllBooks(page = 1, pageSize = 10) {
     const offset = (page - 1) * pageSize;
     const query = `

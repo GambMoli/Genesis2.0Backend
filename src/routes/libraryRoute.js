@@ -113,27 +113,9 @@ router.put('/library/reservations/:reservaId', async (req, res) => {
   }
 });
 
-router.put('/library/cancel-reservation/:reservaId', async (req, res) => {
-  // #swagger.tags = ['Library']
-  // #swagger.summary = 'Cancel book reservation'
-  // #swagger.description = 'Cancels a specific book reservation for a user'
-  const { reservaId } = req.params;
-  const { userId } = req.body;
-
-  try {
-    const result = await libraryService.cancelReservation(reservaId, userId);
-    if (result.success) {
-      res.status(200).json(result);
-    } else {
-      res.status(400).json(result);
-    }
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error al cancelar la reserva' });
-  }
-});
 
 router.get('/library/:libroId/estadisticas', async (req, res) => {
-  // #swagger.tags = ['Libros']
+  // #swagger.tags = ['Library']
   // #swagger.summary = 'Obtener estadísticas del libro'
   // #swagger.description = 'Recupera estadísticas para un libro específico'
   try {
@@ -154,6 +136,28 @@ router.get('/library/:libroId/estadisticas', async (req, res) => {
   }
 });
 
+router.put('/library/reservations/:reservaId/modify', async (req, res) => {
+  // #swagger.tags = ['Library']
+  // #swagger.summary = 'Modify a reservation'
+  // #swagger.description = 'Modifies the dates of an existing book reservation'
+  const { reservaId } = req.params;
+  const { userId, newStartDate, newEndDate } = req.body;
+
+  try {
+    const result = await libraryService.modifyReservation(reservaId, userId, newStartDate, newEndDate);
+    console.log('====================================');
+    console.log(result);
+    console.log('====================================');
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error('Error al modificar la reserva:', error);
+    res.status(500).json({ success: false, message: 'Error al modificar la reserva' });
+  }
+});
 
 
 export default router;

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1728594220495" clover="3.2.0">
+  <project timestamp="1728594220495" name="All files">
+    <metrics statements="73" coveredstatements="27" conditionals="21" coveredconditionals="4" methods="15" coveredmethods="6" elements="109" coveredelements="37" complexity="0" loc="73" ncloc="73" packages="1" files="2" classes="2"/>
+    <file name="Command.js" path="C:\Users\LOQ\Documents\Universidad\Genesis2.0Backend\src\class\Commands\Command.js">
+      <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
+      <line num="3" count="0" type="stmt"/>
+      <line num="7" count="0" type="stmt"/>
+      <line num="11" count="0" type="stmt"/>
+      <line num="15" count="0" type="stmt"/>
+    </file>
+    <file name="ReserveSpaceCommand.js" path="C:\Users\LOQ\Documents\Universidad\Genesis2.0Backend\src\class\Commands\ReserveSpaceCommand.js">
+      <metrics statements="69" coveredstatements="27" conditionals="21" coveredconditionals="4" methods="11" coveredmethods="6"/>
+      <line num="6" count="3" type="stmt"/>
+      <line num="7" count="3" type="stmt"/>
+      <line num="8" count="3" type="stmt"/>
+      <line num="9" count="3" type="stmt"/>
+      <line num="10" count="3" type="stmt"/>
+      <line num="11" count="3" type="stmt"/>
+      <line num="12" count="3" type="stmt"/>
+      <line num="16" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+      <line num="35" count="1" type="stmt"/>
+      <line num="37" count="1" type="stmt"/>
+      <line num="41" count="2" type="stmt"/>
+      <line num="51" count="2" type="stmt"/>
+      <line num="61" count="2" type="stmt"/>
+      <line num="65" count="1" type="stmt"/>
+      <line num="69" count="1" type="stmt"/>
+      <line num="71" count="1" type="stmt"/>
+      <line num="72" count="1" type="stmt"/>
+      <line num="81" count="1" type="stmt"/>
+      <line num="82" count="1" type="stmt"/>
+      <line num="83" count="1" type="stmt"/>
+      <line num="85" count="1" type="stmt"/>
+      <line num="87" count="1" type="stmt"/>
+      <line num="92" count="1" type="stmt"/>
+      <line num="105" count="0" type="stmt"/>
+      <line num="110" count="0" type="stmt"/>
+      <line num="112" count="0" type="stmt"/>
+      <line num="113" count="0" type="stmt"/>
+      <line num="122" count="0" type="stmt"/>
+      <line num="123" count="0" type="stmt"/>
+      <line num="124" count="0" type="stmt"/>
+      <line num="126" count="0" type="stmt"/>
+      <line num="131" count="0" type="stmt"/>
+      <line num="143" count="0" type="stmt"/>
+      <line num="148" count="0" type="stmt"/>
+      <line num="149" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="150" count="0" type="stmt"/>
+      <line num="153" count="0" type="stmt"/>
+      <line num="154" count="0" type="stmt"/>
+      <line num="155" count="0" type="stmt"/>
+      <line num="156" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="157" count="0" type="stmt"/>
+      <line num="159" count="0" type="stmt"/>
+      <line num="161" count="0" type="stmt"/>
+      <line num="166" count="0" type="stmt"/>
+      <line num="167" count="0" type="stmt"/>
+      <line num="169" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="170" count="0" type="stmt"/>
+      <line num="173" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="174" count="0" type="stmt"/>
+      <line num="185" count="0" type="stmt"/>
+      <line num="196" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="197" count="0" type="stmt"/>
+      <line num="200" count="0" type="stmt"/>
+      <line num="206" count="0" type="stmt"/>
+      <line num="208" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="209" count="0" type="stmt"/>
+      <line num="212" count="0" type="stmt"/>
+      <line num="216" count="0" type="stmt"/>
+      <line num="224" count="0" type="stmt"/>
+      <line num="225" count="0" type="stmt"/>
+      <line num="227" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="228" count="0" type="stmt"/>
+      <line num="231" count="0" type="stmt"/>
+      <line num="233" count="0" type="stmt"/>
+      <line num="247" count="0" type="stmt"/>
+    </file>
+  </project>
+</coverage>

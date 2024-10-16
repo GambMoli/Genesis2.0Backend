@@ -9,10 +9,17 @@
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
-    }
+    },
+    "collectCoverage": true,
+    "coverageReporters": [
+      "html"
+    ],
+    "coverageDirectory": "coverage"
   },
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:coverage": "npm test && npm run open:coverage",
+    "open:coverage": "start coverage/lcov-report/index.html",
     "dev": "node src/swaggerConfig.js && nodemon src/app.js",
     "start": "node src/swaggerConfig.js && node src/app.js"
   },

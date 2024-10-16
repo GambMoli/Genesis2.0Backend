@@ -647,31 +647,19 @@
         }
       }
     },
-    "/library/cancel-reservation/{reservaId}": {
-      "put": {
+    "/library/{libroId}/estadisticas": {
+      "get": {
         "tags": [
           "Library"
         ],
-        "summary": "Cancel book reservation",
-        "description": "Cancels a specific book reservation for a user",
+        "summary": "Obtener estadísticas del libro",
+        "description": "Recupera estadísticas para un libro específico",
         "parameters": [
           {
-            "name": "reservaId",
+            "name": "libroId",
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -687,19 +675,37 @@
         }
       }
     },
-    "/library/{libroId}/estadisticas": {
-      "get": {
+    "/library/reservations/{reservaId}/modify": {
+      "put": {
         "tags": [
-          "Libros"
+          "Library"
         ],
-        "summary": "Obtener estadísticas del libro",
-        "description": "Recupera estadísticas para un libro específico",
+        "summary": "Modify a reservation",
+        "description": "Modifies the dates of an existing book reservation",
         "parameters": [
           {
-            "name": "libroId",
+            "name": "reservaId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "newStartDate": {
+                  "example": "any"
+                },
+                "newEndDate": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {

@@ -62,6 +62,37 @@ export default class ReserveBookCommand extends Command {
     return { success: true, message: 'Reserva de libro creada con éxito', reservaId: this.reservaId };
   }
 
+  async updateReservationStatus(reservaId, newStatus) {
+    const validStatuses = ['pendiente', 'activa', 'finalizada', 'cancelada'];
+
+    if (!validStatuses.includes(newStatus)) {
+      throw new Error('Estado de reserva no válido. Debe ser pendiente, activa, finalizada, o cancelada.');
+    }
+
+    const query = `
+      UPDATE reservas_libros
+      SET estado = ?, updated_at = NOW()
+      WHERE id = ?
+    `;
+
+    try {
+      const [result] = await pool.query(query, [newStatus, reservaId]);
+
+      if (result.affectedRows === 0) {
+        throw new Error('No se encontró la reserva o no se pudo actualizar');
+      }
+
+      return {
+        success: true,
+        message: `Estado de la reserva actualizado a '${newStatus}' exitosamente`,
+        reservaId,
+        newStatus
+      };
+    } catch (error) {
+      throw new Error(`Error al actualizar el estado de la reserva: ${error.message}`);
+    }
+  }
+
   static async getAllBooks(page = 1, pageSize = 10) {
     const offset = (page - 1) * pageSize;
     const query = `
@@ -123,8 +154,16 @@ export default class ReserveBookCommand extends Command {
     return { success: true, message: 'Reserva cancelada con éxito' };
   }
 
-  static async modifyReservation(reservaId, userId, newStartDate, newEndDate) {
-    if (!await this.checkAvailabilityForModification(reservaId, userId, newStartDate, newEndDate)) {
+  async modifyReservation(reservaId, userId, newStartDate, newEndDate) {
+    // Convertir las fechas al formato que MySQL acepta
+    const formatDate = (date) => {
+      return new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+    };
+
+    const formattedStartDate = formatDate(newStartDate);
+    const formattedEndDate = formatDate(newEndDate);
+
+    if (!await this.checkAvailability(reservaId, userId, formattedStartDate, formattedEndDate)) {
       throw new Error('El libro no está disponible para las nuevas fechas seleccionadas.');
     }
 
@@ -134,13 +173,25 @@ export default class ReserveBookCommand extends Command {
       WHERE id = ? AND usuario_id = ?
     `;
 
-    const [result] = await pool.query(query, [newStartDate, newEndDate, reservaId, userId]);
+    try {
+      const [result] = await pool.query(query, [formattedStartDate, formattedEndDate, reservaId, userId]);
 
-    if (result.affectedRows === 0) {
-      throw new Error('No se pudo modificar la reserva. Verifica que sea tu reserva y que esté en estado pendiente.');
+      if (result.affectedRows === 0) {
+        throw new Error('No se pudo modificar la reserva. Verifica que sea tu reserva y que esté en estado pendiente.');
+      }
+
+      return {
+        success: true,
+        message: 'Reserva modificada con éxito',
+        data: {
+          reservaId,
+          newStartDate: formattedStartDate,
+          newEndDate: formattedEndDate
+        }
+      };
+    } catch (error) {
+      throw new Error(`Error al modificar la reserva: ${error.message}`);
     }
-
-    return { success: true, message: 'Reserva modificada con éxito' };
   }
 
   static async checkAvailabilityForModification(reservaId, bookId, newStartDate, newEndDate) {

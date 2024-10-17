@@ -40,6 +40,11 @@ export default class ReserveBookCommand extends Command {
   }
 
   async execute() {
+    const [bookExists] = await pool.query('SELECT id FROM libros WHERE id = ?', [this.bookId]);
+    if (bookExists.length === 0) {
+      throw new Error('El libro especificado no existe.');
+    }
+
     if (!await this.checkAvailability()) {
       throw new Error('El libro no está disponible para las fechas seleccionadas.');
     }
@@ -451,16 +456,40 @@ export default class ReserveBookCommand extends Command {
         WHERE libro_id = ?
       `,
       lastReservation: `
-        SELECT fecha_fin
+        SELECT fecha_fin, usuario_id
         FROM reservas_libros
         WHERE libro_id = ?
         ORDER BY fecha_fin DESC
         LIMIT 1
       `,
       bookDetails: `
-        SELECT nombre, autor, descripcion
+        SELECT nombre, autor, descripcion, imagen, disponible, created_at
         FROM libros
         WHERE id = ?
+      `,
+      currentReservation: `
+        SELECT id, usuario_id, fecha_inicio, fecha_fin
+        FROM reservas_libros
+        WHERE libro_id = ? AND fecha_inicio <= NOW() AND fecha_fin >= NOW() AND estado = 'activa'
+        LIMIT 1
+      `,
+      upcomingReservations: `
+        SELECT COUNT(*) as count
+        FROM reservas_libros
+        WHERE libro_id = ? AND fecha_inicio > NOW() AND estado = 'pendiente'
+      `,
+      averageReservationDuration: `
+        SELECT AVG(TIMESTAMPDIFF(HOUR, fecha_inicio, fecha_fin)) as avg_duration
+        FROM reservas_libros
+        WHERE libro_id = ? AND estado = 'finalizada'
+      `,
+      mostFrequentUser: `
+        SELECT usuario_id, COUNT(*) as reservation_count
+        FROM reservas_libros
+        WHERE libro_id = ?
+        GROUP BY usuario_id
+        ORDER BY reservation_count DESC
+        LIMIT 1
       `
     };
 
@@ -470,6 +499,24 @@ export default class ReserveBookCommand extends Command {
       const [totalReservationTime] = await pool.query(queries.totalReservationTime, [bookId]);
       const [lastReservation] = await pool.query(queries.lastReservation, [bookId]);
       const [bookDetails] = await pool.query(queries.bookDetails, [bookId]);
+      const [currentReservation] = await pool.query(queries.currentReservation, [bookId]);
+      const [upcomingReservations] = await pool.query(queries.upcomingReservations, [bookId]);
+      const [averageReservationDuration] = await pool.query(queries.averageReservationDuration, [bookId]);
+      const [mostFrequentUser] = await pool.query(queries.mostFrequentUser, [bookId]);
+
+
+      let lastReservationUserName = null;
+      let mostFrequentUserName = null;
+
+      if (lastReservation[0]?.usuario_id) {
+        const [lastReservationUser] = await pool.query('SELECT nombre FROM usuarios WHERE id = ?', [lastReservation[0].usuario_id]);
+        lastReservationUserName = lastReservationUser[0]?.nombre;
+      }
+
+      if (mostFrequentUser[0]?.usuario_id) {
+        const [frequentUser] = await pool.query('SELECT nombre FROM usuarios WHERE id = ?', [mostFrequentUser[0].usuario_id]);
+        mostFrequentUserName = frequentUser[0]?.nombre;
+      }
 
       return {
         bookId,
@@ -477,7 +524,18 @@ export default class ReserveBookCommand extends Command {
         reservationCount: reservationCount[0].count,
         uniqueUsers: uniqueUsers[0].count,
         totalReservationTimeHours: totalReservationTime[0].total_hours || 0,
-        lastReservation: lastReservation[0]?.fecha_fin || null
+        lastReservation: lastReservation[0]?.fecha_fin || null,
+        lastReservationUser: lastReservationUserName,
+        currentReservation: currentReservation[0] || null,
+        upcomingReservationsCount: upcomingReservations[0].count,
+        averageReservationDurationHours: averageReservationDuration[0].avg_duration || 0,
+        mostFrequentUser: {
+          userId: mostFrequentUser[0]?.usuario_id || null,
+          name: mostFrequentUserName,
+          reservationCount: mostFrequentUser[0]?.reservation_count || 0
+        },
+        availability: bookDetails[0].disponible ? 'Disponible' : 'No disponible',
+        createdAt: bookDetails[0].created_at
       };
     } catch (error) {
       throw new Error(`Error al obtener estadísticas del libro: ${error.message}`);

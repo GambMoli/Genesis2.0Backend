@@ -26,7 +26,7 @@ export default class LibraryService {
       console.error('Error al obtener el historial de reservas:', error);
       return { success: false, message: 'Error al obtener el historial de reservas' };
     }
-  } nn
+  }
 
   async getAllBooks(page = 1, pageSize = 10) {
     try {

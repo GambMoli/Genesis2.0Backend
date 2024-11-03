@@ -19,6 +19,10 @@
     {
       "name": "Library",
       "description": "Endpoints relacionados con la biblioteca"
+    },
+    {
+      "name": "Pasantias",
+      "description": "Endpoints relacionados con las pasantias y aplicaciones"
     }
   ],
   "schemes": [
@@ -717,6 +721,220 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pasantias": {
+      "post": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Create a new internship",
+        "description": "Creates a new internship posting with the specified title, description, salary, and company information",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "titulo": {
+                  "example": "any"
+                },
+                "descripcion": {
+                  "example": "any"
+                },
+                "salario": {
+                  "example": "any"
+                },
+                "empresa": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Get all internships",
+        "description": "Retrieves a paginated list of all available internships",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pasantias/{id}": {
+      "get": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Get internship by ID",
+        "description": "Retrieves detailed information about a specific internship posting",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/pasantias/{id}/postular": {
+      "post": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Apply for an internship",
+        "description": "Submits an application for a specific internship position for the given user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "usuarioId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/pasantias/{id}/postulaciones": {
+      "get": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Get all applications for an internship",
+        "description": "Retrieves a paginated list of all applications submitted for a specific internship position",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/postulaciones/{id}/aceptar": {
+      "post": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Accept an application",
+        "description": "Accepts a specific internship application",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/postulaciones/{id}/rechazar": {
+      "post": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Reject an application",
+        "description": "Rejects a specific internship application",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }

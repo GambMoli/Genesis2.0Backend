@@ -21,10 +21,6 @@
       {
         "name": "Library",
         "description": "Endpoints relacionados con la biblioteca"
-      },
-      {
-        "name": "Pasantias",
-        "description": "Endpoints relacionados con las pasantias y aplicaciones"
       }
     ],
     "schemes": [

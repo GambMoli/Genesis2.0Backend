@@ -18,12 +18,10 @@ export default class PasantiaCommand extends Command {
     const offset = (page - 1) * pageSize;
     const [rows] = await pool.query(
       'SELECT * FROM pasantias ORDER BY created_at DESC LIMIT ? OFFSET ?',
-      [pageSize, offset]
+      [Number(pageSize), Number(offset)]
     );
 
-    const [
-      [{ total_count }]
-    ] = await pool.query('SELECT COUNT(*) as total_count FROM pasantias');
+    const [[{ total_count }]] = await pool.query('SELECT COUNT(*) as total_count FROM pasantias');
 
     const totalPages = Math.ceil(total_count / pageSize);
 
@@ -57,19 +55,43 @@ export default class PasantiaCommand extends Command {
   }
 
   async getAllPostulaciones(pasantiaId, page = 1, pageSize = 10) {
-    const offset = (page - 1) * pageSize;
-    const [rows] = await pool.query(
-      `
-        SELECT p.*, u.nombre AS nombre_usuario
-        FROM postulaciones p
-        JOIN usuarios u ON p.usuario_id = u.id
-        WHERE p.pasantia_id = ?
-        ORDER BY p.fecha_postulacion DESC
-        LIMIT ? OFFSET ?
-      `,
-      [pasantiaId, pageSize, offset]
-    );
-    return rows;
+    try {
+      // Validación de parámetros
+      if (page < 1 || pageSize < 1) {
+        throw new Error('La página y el tamaño de página deben ser números positivos');
+      }
+
+      const offset = (page - 1) * pageSize;
+      const [rows] = await pool.query(
+        `
+            SELECT p.*, u.nombre AS nombre_usuario
+            FROM postulaciones p
+            JOIN usuarios u ON p.usuario_id = u.id
+            WHERE p.pasantia_id = ?
+            ORDER BY p.fecha_postulacion DESC
+            LIMIT ? OFFSET ?
+            `,
+        [Number(pasantiaId), Number(pageSize), Number(offset)]
+      );
+
+      // También podemos agregar el conteo total para la paginación
+      const [[{ total_count }]] = await pool.query(
+        'SELECT COUNT(*) as total_count FROM postulaciones WHERE pasantia_id = ?',
+        [Number(pasantiaId)]
+      );
+
+      const totalPages = Math.ceil(total_count / pageSize);
+
+      return {
+        totalItems: total_count,
+        currentPage: page,
+        pageSize,
+        totalPages,
+        data: rows
+      };
+    } catch (error) {
+      throw new Error(`Error al obtener las postulaciones: ${error.message}`);
+    }
   }
 
   async aceptarPostulacion(postulacionId) {

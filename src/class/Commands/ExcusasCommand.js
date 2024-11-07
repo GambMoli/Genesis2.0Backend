@@ -17,7 +17,14 @@ export default class ExcusasCommand extends Command {
   async getAllExcusas(page = 1, pageSize = 10) {
     const offset = (page - 1) * pageSize;
     const [rows] = await pool.query(
-      'SELECT * FROM excusas_medicas ORDER BY created_at DESC LIMIT ? OFFSET ?',
+      `SELECT
+        e.*,
+        u.nombre,
+        u.documento
+      FROM excusas_medicas e
+      LEFT JOIN usuarios u ON e.id_estudiante = u.id
+      ORDER BY e.created_at DESC
+      LIMIT ? OFFSET ?`,
       [Number(pageSize), Number(offset)]
     );
 
@@ -30,7 +37,10 @@ export default class ExcusasCommand extends Command {
       currentPage: page,
       pageSize,
       totalPages,
-      data: rows
+      data: rows.map(row => ({
+        ...row,
+        nombre_completo: `${row.nombre}`.trim()
+      }))
     };
   }
 

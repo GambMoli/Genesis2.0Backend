@@ -106,4 +106,47 @@ router.post('/postulaciones/:id/rechazar', async (req, res) => {
   }
 });
 
+
+router.get('/pasantias/:id/check-postulacion', async (req, res) => {
+  // #swagger.tags = ['Internships']
+  // #swagger.summary = 'Check if user has applied to an internship'
+  // #swagger.description = 'Verifies if a specific user has already applied to the given internship'
+  const { id } = req.params;
+  const { usuarioId } = req.query;
+  try {
+    const result = await pasantiaService.checkUserPostulation(id, usuarioId);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/usuarios/:usuarioId/postulaciones', async (req, res) => {
+  // #swagger.tags = ['Internships']
+  // #swagger.summary = 'Get user applications'
+  // #swagger.description = 'Retrieves a paginated list of all internship applications made by a specific user'
+  const { usuarioId } = req.params;
+  const { page = 1, pageSize = 10 } = req.query;
+  try {
+    const result = await pasantiaService.getUserPostulations(usuarioId, page, pageSize);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/usuarios/:usuarioId/pasantias-disponibles', async (req, res) => {
+  // #swagger.tags = ['Internships']
+  // #swagger.summary = 'Get available internships for user'
+  // #swagger.description = 'Retrieves a paginated list of internships where the user has not applied yet'
+  const { usuarioId } = req.params;
+  const { page = 1, pageSize = 10 } = req.query;
+  try {
+    const result = await pasantiaService.getAvailablePasantias(usuarioId, page, pageSize);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 export default router;

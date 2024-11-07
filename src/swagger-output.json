@@ -19,6 +19,10 @@
     {
       "name": "Library",
       "description": "Endpoints relacionados con la biblioteca"
+    },
+    {
+      "name": "Excusas",
+      "description": "Endpoints relacionados con las excusas medicas"
     }
   ],
   "schemes": [
@@ -928,6 +932,287 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/pasantias/{id}/check-postulacion": {
+      "get": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Check if user has applied to an internship",
+        "description": "Verifies if a specific user has already applied to the given internship",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "usuarioId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/usuarios/{usuarioId}/postulaciones": {
+      "get": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Get user applications",
+        "description": "Retrieves a paginated list of all internship applications made by a specific user",
+        "parameters": [
+          {
+            "name": "usuarioId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/usuarios/{usuarioId}/pasantias-disponibles": {
+      "get": {
+        "tags": [
+          "Internships"
+        ],
+        "summary": "Get available internships for user",
+        "description": "Retrieves a paginated list of internships where the user has not applied yet",
+        "parameters": [
+          {
+            "name": "usuarioId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/excusas": {
+      "post": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Crear una nueva excusa",
+        "description": "Crea una nueva excusa médica con la información proporcionada",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_estudiante": {
+                  "example": "any"
+                },
+                "razon_falta": {
+                  "example": "any"
+                },
+                "fecha_falta": {
+                  "example": "any"
+                },
+                "id_documento": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Obtener todas las excusas",
+        "description": "Obtiene todas las excusas médicas de forma paginada",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/excusas/estudiante/{id}": {
+      "get": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Obtener excusas de un estudiante",
+        "description": "Obtiene todas las excusas médicas de un estudiante específico de forma paginada",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/excusas/{id}/estado": {
+      "put": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Actualizar estado de una excusa",
+        "description": "Actualiza el estado de una excusa médica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/documentos/{id}": {
+      "get": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Descargar documento",
+        "description": "Descarga el archivo PDF de una excusa médica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/documentos": {
+      "post": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Subir documento",
+        "description": "Sube un archivo PDF como parte de una excusa médica",
+        "responses": {
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"

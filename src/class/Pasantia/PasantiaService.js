@@ -81,4 +81,42 @@ export default class PasantiaService {
       throw new Error(`Error al rechazar la postulación: ${error.message}`);
     }
   }
+
+  async checkUserPostulation(pasantiaId, usuarioId) {
+    try {
+      const result = await this.pasantiaCommand.checkUserPostulation(
+        pasantiaId,
+        usuarioId
+      );
+      return result;
+    } catch (error) {
+      throw new Error(`Error al verificar la postulación: ${error.message}`);
+    }
+  }
+
+  async getUserPostulations(usuarioId, page, pageSize) {
+    try {
+      const postulaciones = await this.pasantiaCommand.getUserPostulations(
+        usuarioId,
+        page,
+        pageSize
+      );
+      return { success: true, data: postulaciones };
+    } catch (error) {
+      throw new Error(`Error al obtener las postulaciones del usuario: ${error.message}`);
+    }
+  }
+
+  async getAvailablePasantias(usuarioId, page, pageSize) {
+    try {
+      const pasantias = await this.pasantiaCommand.getAvailablePasantias(
+        usuarioId,
+        page,
+        pageSize
+      );
+      return { success: true, data: pasantias };
+    } catch (error) {
+      throw new Error(`Error al obtener las pasantías disponibles: ${error.message}`);
+    }
+  }
 }

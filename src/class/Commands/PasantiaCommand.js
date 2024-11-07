@@ -125,4 +125,114 @@ export default class PasantiaCommand extends Command {
     }
   }
 
+  async checkUserPostulation(pasantiaId, usuarioId) {
+    try {
+      const [[postulacion]] = await pool.query(
+        'SELECT * FROM postulaciones WHERE pasantia_id = ? AND usuario_id = ?',
+        [Number(pasantiaId), Number(usuarioId)]
+      );
+
+      return {
+        isPostulated: !!postulacion,
+        postulacion: postulacion || null
+      };
+    } catch (error) {
+      throw new Error(`Error al verificar la postulación: ${error.message}`);
+    }
+  }
+
+  async getUserPostulations(usuarioId, page = 1, pageSize = 10) {
+    try {
+      const offset = (page - 1) * pageSize;
+
+      // Obtener las postulaciones con información de las pasantías
+      const [rows] = await pool.query(
+        `
+        SELECT
+          p.*,
+          pas.titulo,
+          pas.descripcion,
+          pas.salario,
+          pas.empresa,
+          p.estado as estado_postulacion,
+          p.fecha_postulacion
+        FROM postulaciones p
+        JOIN pasantias pas ON p.pasantia_id = pas.id
+        WHERE p.usuario_id = ?
+        ORDER BY p.fecha_postulacion DESC
+        LIMIT ? OFFSET ?
+        `,
+        [Number(usuarioId), Number(pageSize), Number(offset)]
+      );
+
+      // Obtener el total de postulaciones del usuario
+      const [[{ total_count }]] = await pool.query(
+        'SELECT COUNT(*) as total_count FROM postulaciones WHERE usuario_id = ?',
+        [Number(usuarioId)]
+      );
+
+      const totalPages = Math.ceil(total_count / pageSize);
+
+      return {
+        totalItems: total_count,
+        currentPage: page,
+        pageSize,
+        totalPages,
+        data: rows
+      };
+    } catch (error) {
+      throw new Error(`Error al obtener las postulaciones del usuario: ${error.message}`);
+    }
+  }
+
+  async getAvailablePasantias(usuarioId, page = 1, pageSize = 10) {
+    try {
+      const offset = (page - 1) * pageSize;
+
+      // Obtener pasantías excluyendo aquellas donde el usuario ya se postuló
+      const [rows] = await pool.query(
+        `
+        SELECT p.*
+        FROM pasantias p
+        WHERE NOT EXISTS (
+          SELECT 1
+          FROM postulaciones pos
+          WHERE pos.pasantia_id = p.id
+          AND pos.usuario_id = ?
+        )
+        ORDER BY p.created_at DESC
+        LIMIT ? OFFSET ?
+        `,
+        [Number(usuarioId), Number(pageSize), Number(offset)]
+      );
+
+      // Obtener el total de pasantías disponibles
+      const [[{ total_count }]] = await pool.query(
+        `
+        SELECT COUNT(*) as total_count
+        FROM pasantias
+        WHERE NOT EXISTS (
+          SELECT 1
+          FROM postulaciones pos
+          WHERE pos.pasantia_id = pasantias.id
+          AND pos.usuario_id = ?
+        )
+        `,
+        [Number(usuarioId)]
+      );
+
+      const totalPages = Math.ceil(total_count / pageSize);
+
+      return {
+        totalItems: total_count,
+        currentPage: page,
+        pageSize,
+        totalPages,
+        data: rows
+      };
+    } catch (error) {
+      throw new Error(`Error al obtener las pasantías disponibles: ${error.message}`);
+    }
+  }
+
 }

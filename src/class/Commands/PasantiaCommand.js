@@ -189,36 +189,27 @@ export default class PasantiaCommand extends Command {
     try {
       const offset = (page - 1) * pageSize;
 
-      // Obtener pasantías excluyendo aquellas donde el usuario ya se postuló
+      // Obtener todas las pasantías y marcar si el usuario está postulado
       const [rows] = await pool.query(
         `
-        SELECT p.*
+        SELECT
+          p.*,
+          CASE
+            WHEN pos.usuario_id IS NOT NULL THEN true
+            ELSE false
+          END as is_postulado
         FROM pasantias p
-        WHERE NOT EXISTS (
-          SELECT 1
-          FROM postulaciones pos
-          WHERE pos.pasantia_id = p.id
+        LEFT JOIN postulaciones pos ON p.id = pos.pasantia_id
           AND pos.usuario_id = ?
-        )
         ORDER BY p.created_at DESC
         LIMIT ? OFFSET ?
         `,
         [Number(usuarioId), Number(pageSize), Number(offset)]
       );
 
-      // Obtener el total de pasantías disponibles
+      // Obtener el total de pasantías
       const [[{ total_count }]] = await pool.query(
-        `
-        SELECT COUNT(*) as total_count
-        FROM pasantias
-        WHERE NOT EXISTS (
-          SELECT 1
-          FROM postulaciones pos
-          WHERE pos.pasantia_id = pasantias.id
-          AND pos.usuario_id = ?
-        )
-        `,
-        [Number(usuarioId)]
+        'SELECT COUNT(*) as total_count FROM pasantias'
       );
 
       const totalPages = Math.ceil(total_count / pageSize);

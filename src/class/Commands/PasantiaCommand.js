@@ -2,6 +2,7 @@ import Command from './Command.js';
 import { pool } from '../../db/db.js';
 
 export default class PasantiaCommand extends Command {
+
   async createPasantia(titulo, descripcion, salario, empresa) {
     try {
       const [result] = await pool.query(
@@ -123,4 +124,5 @@ export default class PasantiaCommand extends Command {
       throw new Error(`Error al rechazar la postulación: ${error.message}`);
     }
   }
+
 }

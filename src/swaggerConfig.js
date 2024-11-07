@@ -35,6 +35,11 @@ const doc = {
       name: 'Library',
       description: 'Endpoints relacionados con la biblioteca'
     },
+    {
+      name: 'Excusas',
+      description: 'Endpoints relacionados con las excusas medicas'
+    },
+
   ],
   definitions: {}
 };
@@ -45,6 +50,7 @@ const endpointsFiles = [
   path.join(__dirname, './routes/spaceReservation.js'),
   path.join(__dirname, './routes/libraryRoute.js'),
   path.join(__dirname, './routes/PasantiaRoute.js'),
+  path.join(__dirname, '/routes/excusasRoute.js')
 ];
 
 const generateDoc = async () => {

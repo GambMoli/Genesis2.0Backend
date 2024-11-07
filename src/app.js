@@ -5,6 +5,7 @@ import userRoutes from './routes/userRoutes.js';
 import spaceReservationRoutes from './routes/spaceReservation.js'
 import libraryRoutes from './routes/libraryRoute.js'
 import PasantiaRoute from './routes/PasantiaRoute.js'
+import excusasRoute from './routes/excusasRoute.js'
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger-output.json' assert { type: "json" };
 
@@ -24,6 +25,7 @@ app.use('/api', userRoutes);
 app.use('/api', spaceReservationRoutes);
 app.use('/api', libraryRoutes);
 app.use('/api', PasantiaRoute);
+app.use('/api', excusasRoute);
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))

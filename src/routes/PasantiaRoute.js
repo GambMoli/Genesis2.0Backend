@@ -157,7 +157,7 @@ router.get('/pasantias/documentos/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const { archivo } = await pasantiaService.getDocumentoById(id);
-    res.setHeader('Content-Disposition', `attachment; filename="excusa"`);
+    res.setHeader('Content-Disposition', `attachment; filename="CV"`);
     res.setHeader('Content-Type', 'application/pdf');
     res.send(archivo);
   } catch (error) {

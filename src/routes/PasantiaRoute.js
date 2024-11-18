@@ -51,7 +51,7 @@ router.post('/pasantias/:id/postular', async (req, res) => {
   // #swagger.summary = 'Apply for an internship'
   // #swagger.description = 'Submits an application for a specific internship position for the given user'
   const { id } = req.params;
-  const { usuarioId } = req.body;
+  const { usuarioId, documento_postulacion_id } = req.body;
   try {
     const result = await pasantiaService.postularPasantia(id, usuarioId, documento_postulacion_id);
     res.status(201).json(result);

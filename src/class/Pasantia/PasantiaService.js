@@ -41,7 +41,7 @@ export default class PasantiaService {
     }
   }
 
-  async postularPasantia(pasantiaId, usuarioId) {
+  async postularPasantia(pasantiaId, usuarioId, documento_postulacion_id) {
     try {
       const result = await this.pasantiaCommand.postularPasantia(
         pasantiaId,

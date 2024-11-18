@@ -119,4 +119,22 @@ export default class PasantiaService {
       throw new Error(`Error al obtener las pasantías disponibles: ${error.message}`);
     }
   }
+
+  async getDocumentoById(id) {
+    try {
+      const { archivo } = await this.excusasCommand.getDocumentoById(id);
+      return { success: true, archivo };
+    } catch (error) {
+      throw new Error(`Error al obtener el documento: ${error.message}`);
+    }
+  }
+
+  async uploadDocumento(archivo) {
+    try {
+      const result = await this.excusasCommand.uploadDocumento(archivo);
+      return result;
+    } catch (error) {
+      throw new Error(`Error al subir el documento: ${error.message}`);
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import express from 'express';
 import PasantiaService from '../class/Pasantia/PasantiaService.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 const pasantiaService = new PasantiaService();
@@ -146,6 +147,37 @@ router.get('/usuarios/:usuarioId/pasantias-disponibles', async (req, res) => {
     res.json(result);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/documentos/:id', async (req, res) => {
+  // #swagger.tags = ['Excusas Médicas']
+  // #swagger.summary = 'Descargar documento'
+  // #swagger.description = 'Descarga el archivo PDF de una excusa médica'
+  const { id } = req.params;
+  try {
+    const { archivo } = await excusasService.getDocumentoById(id);
+    res.setHeader('Content-Disposition', `attachment; filename="excusa"`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(archivo);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/documentos', upload.single('archivo'), async (req, res) => {
+  // #swagger.tags = ['Internships']
+  // #swagger.summary = 'Subir documento'
+  // #swagger.description = 'Sube un archivo PDF como parte de una CV'
+  const archivo = req.file?.buffer; // Obtiene el archivo en buffer
+  console.log('====================================');
+  console.log(archivo);
+  console.log('====================================');
+  try {
+    const result = await excusasService.uploadDocumento(archivo);
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
   }
 });
 

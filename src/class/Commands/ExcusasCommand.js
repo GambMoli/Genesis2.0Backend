@@ -2,6 +2,7 @@ import Command from './Command.js';
 import { pool } from '../../db/db.js';
 
 export default class ExcusasCommand extends Command {
+
   async createExcusa(id_estudiante, razon_falta, fecha_falta, id_documento) {
     try {
       const [result] = await pool.query(

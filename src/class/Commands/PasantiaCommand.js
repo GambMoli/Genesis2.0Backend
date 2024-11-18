@@ -3,11 +3,11 @@ import { pool } from '../../db/db.js';
 
 export default class PasantiaCommand extends Command {
 
-  async createPasantia(titulo, descripcion, salario, empresa) {
+  async createPasantia(titulo, descripcion, salario, empresa, direccion = null, latitud = null, longitud = null) {
     try {
       const [result] = await pool.query(
-        'INSERT INTO pasantias (titulo, descripcion, salario, empresa) VALUES (?, ?, ?, ?)',
-        [titulo, descripcion, salario, empresa]
+        'INSERT INTO pasantias (titulo, descripcion, salario, empresa, direccion, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [titulo, descripcion, salario, empresa, direccion, latitud, longitud]
       );
       return { success: true, pasantiaId: result.insertId };
     } catch (error) {
@@ -43,11 +43,11 @@ export default class PasantiaCommand extends Command {
     return pasantia;
   }
 
-  async postularPasantia(pasantiaId, usuarioId) {
+  async postularPasantia(pasantiaId, usuarioId, documentoPostulacionId) {
     try {
       const [result] = await pool.query(
-        'INSERT INTO postulaciones (pasantia_id, usuario_id) VALUES (?, ?)',
-        [pasantiaId, usuarioId]
+        'INSERT INTO postulaciones (pasantia_id, usuario_id, documento_postulacion_id) VALUES (?, ?, ?)',
+        [pasantiaId, usuarioId, documentoPostulacionId]
       );
       return { success: true, postulacionId: result.insertId };
     } catch (error) {
@@ -223,6 +223,33 @@ export default class PasantiaCommand extends Command {
       };
     } catch (error) {
       throw new Error(`Error al obtener las pasantías disponibles: ${error.message}`);
+    }
+  }
+
+  async getDocumentoById(id) {
+    try {
+      const [rows] = await pool.query(
+        'SELECT archivo FROM documentos_postulaciones WHERE id = ?',
+        [id]
+      );
+      if (rows.length === 0) {
+        throw new Error('Documento no encontrado');
+      }
+      return { archivo: rows[0].archivo };
+    } catch (error) {
+      throw new Error(`Error al obtener el documento: ${error.message}`);
+    }
+  }
+
+  async uploadDocumento(archivo) {
+    try {
+      const [result] = await pool.query(
+        'INSERT INTO documentos_postulaciones (archivo) VALUES (?)',
+        [archivo]
+      );
+      return { success: true, documentoId: result.insertId };
+    } catch (error) {
+      throw new Error(`Error al subir el documento: ${error.message}`);
     }
   }
 

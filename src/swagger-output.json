@@ -1039,6 +1039,48 @@
         }
       }
     },
+    "/documentos/{id}": {
+      "get": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Descargar documento",
+        "description": "Descarga el archivo PDF de una excusa médica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/documentos": {
+      "post": {
+        "tags": [
+          "Excusas Médicas"
+        ],
+        "summary": "Subir documento",
+        "description": "Sube un archivo PDF como parte de una excusa médica",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/excusas": {
       "post": {
         "tags": [
@@ -1171,48 +1213,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/documentos/{id}": {
-      "get": {
-        "tags": [
-          "Excusas Médicas"
-        ],
-        "summary": "Descargar documento",
-        "description": "Descarga el archivo PDF de una excusa médica",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/documentos": {
-      "post": {
-        "tags": [
-          "Excusas Médicas"
-        ],
-        "summary": "Subir documento",
-        "description": "Sube un archivo PDF como parte de una excusa médica",
-        "responses": {
-          "201": {
-            "description": "Created"
           },
           "400": {
             "description": "Bad Request"

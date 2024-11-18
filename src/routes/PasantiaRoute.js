@@ -9,13 +9,10 @@ router.post('/pasantias', async (req, res) => {
   // #swagger.tags = ['Internships']
   // #swagger.summary = 'Create a new internship'
   // #swagger.description = 'Creates a new internship posting with the specified title, description, salary, and company information'
-  const { titulo, descripcion, salario, empresa } = req.body;
+  const { usuarioId, titulo, descripcion, salario, empresa, direccion, latitud, longitud } = req.body;
   try {
     const result = await pasantiaService.createPasantia(
-      titulo,
-      descripcion,
-      salario,
-      empresa
+      usuarioId, titulo, descripcion, salario, empresa, direccion, latitud, longitud
     );
     res.status(201).json(result);
   } catch (error) {

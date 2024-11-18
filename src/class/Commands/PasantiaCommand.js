@@ -3,11 +3,11 @@ import { pool } from '../../db/db.js';
 
 export default class PasantiaCommand extends Command {
 
-  async createPasantia(titulo, descripcion, salario, empresa, direccion = null, latitud = null, longitud = null) {
+  async createPasantia(usuarioId, titulo, descripcion, salario, empresa, direccion = null, latitud = null, longitud = null) {
     try {
       const [result] = await pool.query(
-        'INSERT INTO pasantias (titulo, descripcion, salario, empresa, direccion, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [titulo, descripcion, salario, empresa, direccion, latitud, longitud]
+        'INSERT INTO pasantias (usuario_id, titulo, descripcion, salario, empresa, direccion, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [usuarioId, titulo, descripcion, salario, empresa, direccion, latitud, longitud]
       );
       return { success: true, pasantiaId: result.insertId };
     } catch (error) {
@@ -33,6 +33,39 @@ export default class PasantiaCommand extends Command {
       totalPages,
       data: rows
     };
+  }
+
+  async getPasantiasByUser(usuarioId, page = 1, pageSize = 10) {
+    try {
+      const offset = (page - 1) * pageSize;
+
+      // Obtener pasantías creadas por el usuario (asumiendo que hay una columna usuario_id en pasantias)
+      const [rows] = await pool.query(
+        `SELECT * FROM pasantias
+         WHERE usuario_id = ?
+         ORDER BY created_at DESC
+         LIMIT ? OFFSET ?`,
+        [Number(usuarioId), Number(pageSize), Number(offset)]
+      );
+
+      // Contar total de pasantías del usuario
+      const [[{ total_count }]] = await pool.query(
+        'SELECT COUNT(*) as total_count FROM pasantias WHERE usuario_id = ?',
+        [Number(usuarioId)]
+      );
+
+      const totalPages = Math.ceil(total_count / pageSize);
+
+      return {
+        totalItems: total_count,
+        currentPage: page,
+        pageSize,
+        totalPages,
+        data: rows
+      };
+    } catch (error) {
+      throw new Error(`Error al obtener las pasantías del usuario: ${error.message}`);
+    }
   }
 
   async getPasantiaById(id) {

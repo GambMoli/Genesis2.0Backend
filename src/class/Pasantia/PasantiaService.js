@@ -5,13 +5,17 @@ export default class PasantiaService {
     this.pasantiaCommand = new PasantiaCommand();
   }
 
-  async createPasantia(titulo, descripcion, salario, empresa) {
+  async createPasantia(usuarioId, titulo, descripcion, salario, empresa, direccion, latitud, longitud) {
     try {
       const result = await this.pasantiaCommand.createPasantia(
+        usuarioId,
         titulo,
         descripcion,
         salario,
-        empresa
+        empresa,
+        direccion,
+        latitud,
+        longitud
       );
       return result;
     } catch (error) {

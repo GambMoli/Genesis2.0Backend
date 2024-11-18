@@ -150,10 +150,10 @@ router.get('/usuarios/:usuarioId/pasantias-disponibles', async (req, res) => {
   }
 });
 
-router.get('/documentos/:id', async (req, res) => {
+router.get('/pasantias/documentos/:id', async (req, res) => {
   // #swagger.tags = ['Excusas Médicas']
   // #swagger.summary = 'Descargar documento'
-  // #swagger.description = 'Descarga el archivo PDF de una excusa médica'
+  // #swagger.description = 'Descarga el archivo PDF CV'
   const { id } = req.params;
   try {
     const { archivo } = await excusasService.getDocumentoById(id);
@@ -165,7 +165,7 @@ router.get('/documentos/:id', async (req, res) => {
   }
 });
 
-router.post('/documentos', upload.single('archivo'), async (req, res) => {
+router.post('/pasantias/documentos', upload.single('archivo'), async (req, res) => {
   // #swagger.tags = ['Internships']
   // #swagger.summary = 'Subir documento'
   // #swagger.description = 'Sube un archivo PDF como parte de una CV'

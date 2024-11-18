@@ -53,7 +53,7 @@ router.post('/pasantias/:id/postular', async (req, res) => {
   const { id } = req.params;
   const { usuarioId } = req.body;
   try {
-    const result = await pasantiaService.postularPasantia(id, usuarioId);
+    const result = await pasantiaService.postularPasantia(id, usuarioId, documento_postulacion_id);
     res.status(201).json(result);
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

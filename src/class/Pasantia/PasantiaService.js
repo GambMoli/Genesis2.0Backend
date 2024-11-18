@@ -45,7 +45,8 @@ export default class PasantiaService {
     try {
       const result = await this.pasantiaCommand.postularPasantia(
         pasantiaId,
-        usuarioId
+        usuarioId,
+        documento_postulacion_id
       );
       return result;
     } catch (error) {

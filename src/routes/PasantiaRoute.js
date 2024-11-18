@@ -156,7 +156,7 @@ router.get('/pasantias/documentos/:id', async (req, res) => {
   // #swagger.description = 'Descarga el archivo PDF CV'
   const { id } = req.params;
   try {
-    const { archivo } = await excusasService.getDocumentoById(id);
+    const { archivo } = await pasantiaService.getDocumentoById(id);
     res.setHeader('Content-Disposition', `attachment; filename="excusa"`);
     res.setHeader('Content-Type', 'application/pdf');
     res.send(archivo);
@@ -174,7 +174,7 @@ router.post('/pasantias/documentos', upload.single('archivo'), async (req, res) 
   console.log(archivo);
   console.log('====================================');
   try {
-    const result = await excusasService.uploadDocumento(archivo);
+    const result = await pasantiaService.uploadDocumento(archivo);
     res.status(201).json(result);
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

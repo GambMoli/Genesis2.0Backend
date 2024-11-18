@@ -122,7 +122,7 @@ export default class PasantiaService {
 
   async getDocumentoById(id) {
     try {
-      const { archivo } = await this.excusasCommand.getDocumentoById(id);
+      const { archivo } = await this.pasantiaCommand.getDocumentoById(id);
       return { success: true, archivo };
     } catch (error) {
       throw new Error(`Error al obtener el documento: ${error.message}`);
@@ -131,7 +131,7 @@ export default class PasantiaService {
 
   async uploadDocumento(archivo) {
     try {
-      const result = await this.excusasCommand.uploadDocumento(archivo);
+      const result = await this.pasantiaCommand.uploadDocumento(archivo);
       return result;
     } catch (error) {
       throw new Error(`Error al subir el documento: ${error.message}`);

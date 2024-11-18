@@ -151,7 +151,7 @@ router.get('/usuarios/:usuarioId/pasantias-disponibles', async (req, res) => {
 });
 
 router.get('/pasantias/documentos/:id', async (req, res) => {
-  // #swagger.tags = ['Excusas Médicas']
+  // #swagger.tags = ['Internships']
   // #swagger.summary = 'Descargar documento'
   // #swagger.description = 'Descarga el archivo PDF CV'
   const { id } = req.params;

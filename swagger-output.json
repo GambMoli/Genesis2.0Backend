@@ -1041,13 +1041,13 @@
           }
         }
       },
-      "/documentos/{id}": {
+      "/pasantias/documentos/{id}": {
         "get": {
           "tags": [
             "Excusas Médicas"
           ],
           "summary": "Descargar documento",
-          "description": "Descarga el archivo PDF de una excusa médica",
+          "description": "Descarga el archivo PDF CV",
           "parameters": [
             {
               "name": "id",
@@ -1066,13 +1066,13 @@
           }
         }
       },
-      "/documentos": {
+      "/pasantias/documentos": {
         "post": {
           "tags": [
-            "Excusas Médicas"
+            "Internships"
           ],
           "summary": "Subir documento",
-          "description": "Sube un archivo PDF como parte de una excusa médica",
+          "description": "Sube un archivo PDF como parte de una CV",
           "responses": {
             "201": {
               "description": "Created"
@@ -1215,6 +1215,48 @@
           "responses": {
             "200": {
               "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          }
+        }
+      },
+      "/documentos/{id}": {
+        "get": {
+          "tags": [
+            "Excusas Médicas"
+          ],
+          "summary": "Descargar documento",
+          "description": "Descarga el archivo PDF de una excusa médica",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          }
+        }
+      },
+      "/documentos": {
+        "post": {
+          "tags": [
+            "Excusas Médicas"
+          ],
+          "summary": "Subir documento",
+          "description": "Sube un archivo PDF como parte de una excusa médica",
+          "responses": {
+            "201": {
+              "description": "Created"
             },
             "400": {
               "description": "Bad Request"
